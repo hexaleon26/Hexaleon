@@ -537,7 +537,18 @@
 .logo-trigger:hover .brand-full-name{color:#ffb15c}
 .close-reveal{left:max(18px,env(safe-area-inset-left))!important;right:auto!important}
 @media(max-width:640px){.logo-trigger{min-width:0;height:50px}.brand-symbol{width:36px;height:36px}.brand-full-name{font-size:.84rem;letter-spacing:.13em}.close-reveal{left:max(12px,env(safe-area-inset-left))!important;right:auto!important}}
-</style></head>
+</style>
+<style>
+.registered-card{width:min(92vw,620px);padding:clamp(32px,6vw,58px);text-align:center;border:1px solid rgba(255,173,66,.34);border-radius:26px;background:linear-gradient(155deg,#17100a,#080503);box-shadow:0 30px 90px rgba(0,0,0,.55),0 0 60px rgba(255,145,35,.08);color:#fff8ed}
+.registered-check{width:76px;height:76px;margin:0 auto 22px;display:grid;place-items:center;border:2px solid #ffad42;border-radius:50%;color:#ffad42;font-size:2.3rem;font-weight:900;box-shadow:0 0 28px rgba(255,173,66,.18)}
+.registered-kicker{margin:0 0 12px!important;color:#ffad42!important;font:800 .72rem/1 ui-monospace,monospace!important;letter-spacing:.2em}
+.registered-card h2{display:block!important;margin:0 0 14px!important;font-size:clamp(2rem,5vw,3.4rem)!important;color:#fff8ed}
+.registered-copy{display:block!important;margin:0 auto 22px!important;max-width:480px;color:#b9aa99!important;font-size:1rem!important;line-height:1.7!important}
+.registered-card blockquote{margin:24px auto 30px;max-width:500px;color:#ffcf66;font-size:clamp(1rem,2.2vw,1.25rem);font-weight:700;line-height:1.55}
+.registered-home{width:auto!important;min-width:170px}
+.success-reveal .submission-page{background:radial-gradient(circle at 50% 30%,rgba(255,145,35,.11),transparent 30rem),#050403;color:#fff8ed}
+</style>
+</head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
   <header class="site-header" id="site-header">
@@ -570,14 +581,16 @@
     </div>
   </div>
 
-  <div class="success-reveal" id="success-reveal" role="dialog" aria-modal="true" aria-label="Hexaleon enquiry submission" aria-hidden="true" tabindex="-1" inert>
+  <div class="success-reveal" id="success-reveal" role="dialog" aria-modal="true" aria-label="Hexaleon registration successful" aria-hidden="true" tabindex="-1" inert>
     <div class="submission-page" id="submission-page">
-      <div class="submission-message">
-        <h2>Almost There</h2>
-        <p>Please help us fight spam by<br>clicking the box below:</p>
-        <div class="submission-box" aria-hidden="true"></div>
+      <div class="registered-card">
+        <div class="registered-check" aria-hidden="true">✓</div>
+        <p class="registered-kicker">HEXALEON</p>
+        <h2>Registered Successfully!</h2>
+        <p class="registered-copy">Welcome to Hexaleon. Your registration has been received.</p>
+        <blockquote>“Build secure. Think beyond. Create a safer digital tomorrow.”</blockquote>
+        <button class="button button-primary registered-home" id="registered-home" type="button">Go to Home</button>
       </div>
-      <div class="submission-brand">You are using <span>ZEPHYRIX</span></div>
     </div>
     <div class="submission-video-screen" id="submission-video-screen" aria-hidden="true">
       <video id="submission-video" preload="auto" playsinline>
@@ -682,17 +695,18 @@
           <div class="contact-list" aria-label="Direct contact details">
             <a class="contact-link" href="tel:+917845317344"><small>CALL 01</small>+91 78453 17344</a>
             <a class="contact-link" href="tel:+916383102433"><small>CALL 02</small>+91 63831 02433</a>
-            <a class="contact-link" href="mailto:hexaleon2000@gmail.com"><small>EMAIL</small>Business enquiries</a>
+            <a class="contact-link" href="mailto:hexaleon2000@gmail.com"><small>EMAIL</small>hexaleon2000@gmail.com</a>
           </div>
         </div>
         <form class="lead-form" id="enquiry-form" action="https://formsubmit.co/ajax/hexaleon2000@gmail.com" method="POST" novalidate>
-          <input type="hidden" name="_subject" value="New Hexaleon Website Enquiry">
+          <input type="hidden" name="_subject" value="New Hexaleon Registration">
           <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_autoresponse" value="Thank you for registering with Hexaleon. We have received your details.">
           <input type="hidden" name="_captcha" value="false">
           <input type="hidden" name="_replyto" id="reply-to" value="">
           <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
           <div class="form-head">
-            <div><small>PROJECT ENQUIRY</small><h3>Contact Hexaleon</h3></div>
+            <div><small>HEXALEON REGISTRATION</small><h3>Register with Hexaleon</h3></div>
             <span class="secure-label">● SECURE</span>
           </div>
           <div class="form-fields">
@@ -712,8 +726,8 @@
               <small class="field-error" id="mobile-error" aria-live="polite"></small>
             </div>
           </div>
-          <button class="button button-primary submit" id="submit-button" type="submit"><span id="submit-label">Send enquiry</span></button>
-          <p class="form-status" id="form-status" role="status" aria-live="polite">We only use these details to respond to your enquiry.</p>
+          <button class="button button-primary submit" id="submit-button" type="submit"><span id="submit-label">Register</span></button>
+          <p class="form-status" id="form-status" role="status" aria-live="polite">Your registration details will be sent securely to Hexaleon.</p>
         </form>
       </div>
     </section>
@@ -849,15 +863,17 @@
         successReveal.inert = false;
         successReveal.setAttribute('aria-hidden', 'false');
         document.body.classList.add('menu-open');
-        successReveal.classList.remove('video-mode');
-        submissionVideoScreen.setAttribute('aria-hidden', 'true');
+        successReveal.classList.add('video-mode');
+        submissionVideoScreen.setAttribute('aria-hidden', 'false');
         submissionVideo.currentTime = 0;
         submissionVideo.muted = false;
         requestAnimationFrame(() => successReveal.classList.add('open'));
         successReveal.focus({ preventScroll: true });
-
-        // Keep the confirmation on-brand, then return to the top.
-        successCloseTimer = window.setTimeout(finishSubmissionSequence, 2400);
+        try { await submissionVideo.play(); }
+        catch (_) {
+          submissionVideo.muted = true;
+          try { await submissionVideo.play(); } catch (_) { finishSubmissionSequence(); }
+        }
       };
       const closeSuccessReveal = () => {
         window.clearTimeout(successCloseTimer);
@@ -872,8 +888,11 @@
       };
       const finishSubmissionSequence = () => {
         if (!successReveal.classList.contains('open')) return;
-        closeSuccessReveal();
-        window.setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 120);
+        submissionVideo.pause();
+        submissionVideo.currentTime = 0;
+        submissionVideoScreen.setAttribute('aria-hidden', 'true');
+        successReveal.classList.remove('video-mode');
+        document.querySelector('#registered-home')?.focus({ preventScroll: true });
       };
 
       menuButton.addEventListener('click', () => {
@@ -890,6 +909,11 @@
       });
       submissionVideo.addEventListener('ended', finishSubmissionSequence);
       submissionVideo.addEventListener('error', finishSubmissionSequence);
+      document.querySelector('#registered-home')?.addEventListener('click', () => {
+        closeSuccessReveal();
+        history.replaceState(null, '', location.pathname + location.search);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
       logoVideo.addEventListener('error', () => {
         if (submissionPlayback) {
           logoVideo.controls = false;
@@ -1003,7 +1027,7 @@
 
         const checks = [validateName(), validateEmail(), validateMobile()];
         if (checks.includes(false)) {
-          formStatus.textContent = 'Correct the highlighted fields before sending.';
+          formStatus.textContent = 'Correct the highlighted fields before registering.';
           formStatus.classList.add('error');
           form.querySelector('.is-invalid')?.focus();
           return;
@@ -1012,14 +1036,14 @@
         if (form.elements._honey.value) return;
 
         if (Date.now() - lastSubmissionAt < 20000) {
-          formStatus.textContent = 'Please wait a few seconds before sending another enquiry.';
+          formStatus.textContent = 'Please wait a few seconds before registering again.';
           formStatus.classList.add('error');
           return;
         }
 
         submitButton.disabled = true;
         submitLabel.textContent = 'Sending securely…';
-        formStatus.textContent = 'Sending your enquiry securely…';
+        formStatus.textContent = 'Sending your registration securely…';
         lastSubmissionAt = Date.now();
 
         // Start audio from the real submit gesture so mobile browsers allow it.
@@ -1045,10 +1069,10 @@
           }
 
           if (!response.ok || result.success === false) {
-            throw new Error(result.message || 'Hexaleon could not send the enquiry.');
+            throw new Error(result.message || 'Hexaleon could not complete the registration.');
           }
 
-          formStatus.textContent = 'Enquiry sent successfully.';
+          formStatus.textContent = 'Registration sent successfully.';
           formStatus.classList.add('success');
 
           // Stay on the Hexaleon website. Show the local sequence, then return home.
@@ -1066,7 +1090,7 @@
           formStatus.textContent = 'Unable to send right now. Please try again or use the email shown above.';
           formStatus.classList.add('error');
           submitButton.disabled = false;
-          submitLabel.textContent = 'Send enquiry';
+          submitLabel.textContent = 'Register';
           lastSubmissionAt = 0;
         }
       });
@@ -1074,17 +1098,5 @@
       document.querySelector('#year').textContent = new Date().getFullYear();
     })();
   </script>
-<script>
-document.addEventListener("DOMContentLoaded",()=>{
- const ov=document.getElementById("logo-reveal"),v=document.getElementById("logo-video"),lg=document.getElementById("logo-trigger"),x=document.getElementById("close-reveal");
- function play(sub=false){if(!ov||!v)return;ov.classList.add("open");ov.classList.toggle("submission-playback",sub);ov.removeAttribute("inert");ov.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";v.currentTime=0;v.muted=false;let p=v.play();if(p)p.catch(()=>{v.muted=true;v.play().catch(()=>{})})}
- function shut(home=false){if(!ov||!v)return;v.pause();ov.classList.remove("open","submission-playback");ov.setAttribute("aria-hidden","true");ov.setAttribute("inert","");document.body.style.overflow="";if(home){history.replaceState(null,"",location.pathname+location.search);scrollTo({top:0,behavior:"smooth"})}}
- if(lg){const n=lg.cloneNode(true);lg.replaceWith(n);n.addEventListener("click",e=>{e.preventDefault();play(false)})}
- if(x){const n=x.cloneNode(true);x.replaceWith(n);n.addEventListener("click",()=>shut(false))}
- if(v){v.onended=()=>shut(ov.classList.contains("submission-playback"))}
- document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener("click",e=>{let q=a.getAttribute("href"),t=q&&q!=="#"&&document.querySelector(q);if(t){e.preventDefault();t.scrollIntoView({behavior:"smooth",block:"start"});history.replaceState(null,"",q)}}));
- const f=document.querySelector("form");
- if(f){const nf=f.cloneNode(true);f.replaceWith(nf);nf.addEventListener("submit",async e=>{e.preventDefault();if(!nf.checkValidity()){nf.reportValidity();return}let b=nf.querySelector('[type="submit"]');if(b)b.disabled=true;try{let r=await fetch("https://formsubmit.co/ajax/hexaleon2000@gmail.com",{method:"POST",headers:{"Accept":"application/json"},body:new FormData(nf)});if(!r.ok)throw 0;nf.reset();play(true)}catch(_){let st=nf.querySelector(".form-status");if(st){st.textContent="Could not send. Please try again or email hexaleon2000@gmail.com.";st.className="form-status error"}}finally{if(b)b.disabled=false}})}
-});
-</script></body>
+</body>
 </html>
