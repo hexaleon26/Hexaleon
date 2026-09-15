@@ -702,7 +702,7 @@
           <input type="hidden" name="_url" id="form-url" value="">
           <input type="hidden" name="_subject" value="New Hexaleon Registration">
           <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_captcha" value="false">
+          
           <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
           <div class="form-head">
             <div><small>HEXALEON REGISTRATION</small><h3>Register with Hexaleon</h3></div>
@@ -1075,14 +1075,28 @@
             result = {};
           }
 
-          if (!response.ok || result.success === false) {
-            throw new Error(result.message || 'Hexaleon could not complete the registration.');
+          const successFlag = result.success === true || result.success === 'true';
+          const serverMessage = String(result.message || '').trim();
+
+          if (!response.ok || !successFlag) {
+            throw new Error(serverMessage || 'Hexaleon could not complete the registration.');
+          }
+
+          // FormSubmit may accept the first request only to trigger recipient activation.
+          // Never display a false "Registered Successfully" screen in that case.
+          if (/activat|confirm|verification/i.test(serverMessage)) {
+            formStatus.textContent = 'Hexaleon email verification is required. Open hexaleon2000@gmail.com, activate the FormSubmit form once, then submit again.';
+            formStatus.classList.add('error');
+            submitButton.disabled = false;
+            submitLabel.textContent = 'Register';
+            lastSubmissionAt = 0;
+            return;
           }
 
           formStatus.textContent = 'Registration sent successfully.';
           formStatus.classList.add('success');
 
-          // Stay on the Hexaleon website. Show the local sequence, then return home.
+          // Only show the existing cinematic success sequence after FormSubmit confirms success.
           window.setTimeout(openSuccessReveal, 120);
 
           form.reset();
@@ -1094,7 +1108,9 @@
 
         } catch (error) {
           console.error('Enquiry submission failed:', error);
-          formStatus.textContent = 'Unable to send right now. Please try again or use the email shown above.';
+          formStatus.textContent = error && error.message
+            ? error.message
+            : 'Unable to send right now. Please try again or use the email shown above.';
           formStatus.classList.add('error');
           submitButton.disabled = false;
           submitLabel.textContent = 'Register';
