@@ -699,12 +699,10 @@
           </div>
         </div>
         <form class="lead-form" id="enquiry-form" action="https://formsubmit.co/hexaleon2000@gmail.com" method="POST" novalidate>
+          <input type="hidden" name="_url" id="form-url" value="">
           <input type="hidden" name="_subject" value="New Hexaleon Registration">
           <input type="hidden" name="_template" value="table">
           <input type="hidden" name="_captcha" value="false">
-          <input type="hidden" name="_autoresponse" value="Thank you for registering with Hexaleon. We have received your details.">
-
-          <input type="hidden" name="_replyto" id="reply-to" value="">
           <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
           <div class="form-head">
             <div><small>HEXALEON REGISTRATION</small><h3>Register with Hexaleon</h3></div>
@@ -713,17 +711,17 @@
           <div class="form-fields">
             <div class="field">
               <label for="name">Full name <span aria-hidden="true">*</span></label>
-              <input id="name" name="Name" type="text" autocomplete="name" autocapitalize="words" placeholder="Enter your full name" minlength="2" maxlength="80" aria-describedby="name-error" required>
+              <input id="name" name="name" type="text" autocomplete="name" autocapitalize="words" placeholder="Enter your full name" minlength="2" maxlength="80" aria-describedby="name-error" required>
               <small class="field-error" id="name-error" aria-live="polite"></small>
             </div>
             <div class="field">
               <label for="email">Email address <span aria-hidden="true">*</span></label>
-              <input id="email" name="Email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="hexaleon2000@gmail.com" maxlength="120" aria-describedby="email-error" required>
+              <input id="email" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="hexaleon2000@gmail.com" maxlength="120" aria-describedby="email-error" required>
               <small class="field-error" id="email-error" aria-live="polite"></small>
             </div>
             <div class="field">
               <label for="mobile">Mobile number <span aria-hidden="true">*</span></label>
-              <input id="mobile" name="Mobile" type="tel" autocomplete="tel" inputmode="numeric" pattern="[6-9][0-9]{9}" maxlength="10" placeholder="10-digit Indian mobile number" aria-describedby="mobile-error" required>
+              <input id="mobile" name="mobile" type="tel" autocomplete="tel" inputmode="numeric" pattern="[6-9][0-9]{9}" maxlength="10" placeholder="10-digit Indian mobile number" aria-describedby="mobile-error" required>
               <small class="field-error" id="mobile-error" aria-live="polite"></small>
             </div>
           </div>
@@ -747,6 +745,8 @@
       const menuButton = document.querySelector('#menu-button');
       const navLinks = [...document.querySelectorAll('.nav-links a')];
       const form = document.querySelector('#enquiry-form');
+      const formUrlField = document.querySelector('#form-url');
+      if (formUrlField && location.protocol !== 'file:') formUrlField.value = location.href;
       const formStatus = document.querySelector('#form-status');
       const mobileInput = document.querySelector('#mobile');
       const logoTrigger = document.querySelector('#logo-trigger');
@@ -1035,6 +1035,12 @@
         }
 
         if (form.elements._honey.value) return;
+
+        if (location.protocol === 'file:') {
+          formStatus.textContent = 'Email sending needs the website to be opened from your hosted URL (for example GitHub Pages), not by double-clicking this HTML file.';
+          formStatus.classList.add('error');
+          return;
+        }
 
         if (Date.now() - lastSubmissionAt < 20000) {
           formStatus.textContent = 'Please wait a few seconds before registering again.';
