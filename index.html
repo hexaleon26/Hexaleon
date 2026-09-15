@@ -1123,3 +1123,49 @@
   </script>
 </body>
 </html>
+
+<style id="hexaleon-final-navbar-video-fix">
+  /* Keep the main navigation visible while either cinematic video is playing */
+  .navbar, nav, header.site-header, .site-header {
+    z-index: 2147483646 !important;
+  }
+
+  .logo-reveal,
+  .submission-sequence,
+  .submission-video-screen,
+  .success-reveal {
+    z-index: 2147483000 !important;
+  }
+
+  /* Reserve the navbar area so fullscreen media starts below it */
+  .logo-reveal video,
+  .submission-video-screen video {
+    max-height: calc(100vh - 76px) !important;
+  }
+
+  /* Never let video overlays disable the navbar */
+  body.logo-reveal-open .navbar,
+  body.logo-reveal-open nav,
+  body.logo-reveal-open .site-header,
+  body.submission-open .navbar,
+  body.submission-open nav,
+  body.submission-open .site-header {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: none !important;
+  }
+</style>
+<script id="hexaleon-final-navbar-video-script">
+(() => {
+  const nav = document.querySelector('.navbar, nav, header.site-header, .site-header');
+  if (!nav) return;
+
+  // Navigation remains usable above fullscreen video overlays.
+  nav.style.position = getComputedStyle(nav).position === 'static' ? 'fixed' : getComputedStyle(nav).position;
+  nav.style.top = '0';
+  nav.style.left = '0';
+  nav.style.right = '0';
+  nav.style.zIndex = '2147483646';
+})();
+</script>
