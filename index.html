@@ -548,6 +548,13 @@
 .registered-home{width:auto!important;min-width:170px}
 .success-reveal .submission-page{background:radial-gradient(circle at 50% 30%,rgba(255,145,35,.11),transparent 30rem),#050403;color:#fff8ed}
 </style>
+
+<style id="hexaleon-final-overlay-fix">
+  .site-header { z-index: 100 !important; }
+  .logo-reveal { z-index: 10000 !important; }
+  .success-reveal { z-index: 10000 !important; }
+  .submission-video-screen { z-index: 2 !important; }
+</style>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -698,11 +705,12 @@
             <a class="contact-link" href="mailto:hexaleon2000@gmail.com"><small>EMAIL</small>hexaleon2000@gmail.com</a>
           </div>
         </div>
-        <form class="lead-form" id="enquiry-form" action="https://formsubmit.co/hexaleon2000@gmail.com" method="POST" novalidate>
-          <input type="hidden" name="_url" id="form-url" value="">
+        <form class="lead-form" id="enquiry-form" action="https://formsubmit.co/ajax/hexaleon2000@gmail.com" method="POST" novalidate>
           <input type="hidden" name="_subject" value="New Hexaleon Registration">
           <input type="hidden" name="_template" value="table">
-          
+          <input type="hidden" name="_autoresponse" value="Thank you for registering with Hexaleon. We have received your details.">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_replyto" id="reply-to" value="">
           <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
           <div class="form-head">
             <div><small>HEXALEON REGISTRATION</small><h3>Register with Hexaleon</h3></div>
@@ -711,17 +719,17 @@
           <div class="form-fields">
             <div class="field">
               <label for="name">Full name <span aria-hidden="true">*</span></label>
-              <input id="name" name="name" type="text" autocomplete="name" autocapitalize="words" placeholder="Enter your full name" minlength="2" maxlength="80" aria-describedby="name-error" required>
+              <input id="name" name="Name" type="text" autocomplete="name" autocapitalize="words" placeholder="Enter your full name" minlength="2" maxlength="80" aria-describedby="name-error" required>
               <small class="field-error" id="name-error" aria-live="polite"></small>
             </div>
             <div class="field">
               <label for="email">Email address <span aria-hidden="true">*</span></label>
-              <input id="email" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="hexaleon2000@gmail.com" maxlength="120" aria-describedby="email-error" required>
+              <input id="email" name="Email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="hexaleon2000@gmail.com" maxlength="120" aria-describedby="email-error" required>
               <small class="field-error" id="email-error" aria-live="polite"></small>
             </div>
             <div class="field">
               <label for="mobile">Mobile number <span aria-hidden="true">*</span></label>
-              <input id="mobile" name="mobile" type="tel" autocomplete="tel" inputmode="numeric" pattern="[6-9][0-9]{9}" maxlength="10" placeholder="10-digit Indian mobile number" aria-describedby="mobile-error" required>
+              <input id="mobile" name="Mobile" type="tel" autocomplete="tel" inputmode="numeric" pattern="[6-9][0-9]{9}" maxlength="10" placeholder="10-digit Indian mobile number" aria-describedby="mobile-error" required>
               <small class="field-error" id="mobile-error" aria-live="polite"></small>
             </div>
           </div>
@@ -745,8 +753,6 @@
       const menuButton = document.querySelector('#menu-button');
       const navLinks = [...document.querySelectorAll('.nav-links a')];
       const form = document.querySelector('#enquiry-form');
-      const formUrlField = document.querySelector('#form-url');
-      if (formUrlField && location.protocol !== 'file:') formUrlField.value = location.href;
       const formStatus = document.querySelector('#form-status');
       const mobileInput = document.querySelector('#mobile');
       const logoTrigger = document.querySelector('#logo-trigger');
@@ -790,14 +796,13 @@
         logoVideo.muted = false;
         const playback = logoVideo.play();
         if (playback) playback.catch(() => {
-          if (!submissionPlayback) {
-            logoVideo.controls = true;
-            return;
-          }
           logoVideo.controls = false;
           logoVideo.muted = true;
           const mutedPlayback = logoVideo.play();
-          if (mutedPlayback) mutedPlayback.catch(finishSubmissionPlayback);
+          if (mutedPlayback) mutedPlayback.catch(() => {
+            logoVideo.controls = true;
+            if (submissionPlayback) finishSubmissionPlayback();
+          });
         });
         if (submissionPlayback) logoReveal.focus({ preventScroll: true });
         else closeRevealButton.focus();
@@ -903,7 +908,11 @@
         menuButton.setAttribute('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
       });
       navLinks.forEach(link => link.addEventListener('click', closeMenu));
-      logoTrigger.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+      logoTrigger.addEventListener('click', () => {
+        submissionPlayback = false;
+        logoReveal.classList.remove('submission-playback');
+        openLogoReveal();
+      });
       closeRevealButton.addEventListener('click', closeLogoReveal);
       logoReveal.addEventListener('click', event => {
         if (!submissionPlayback && event.target === logoReveal) closeLogoReveal();
@@ -1036,12 +1045,6 @@
 
         if (form.elements._honey.value) return;
 
-        if (location.protocol === 'file:') {
-          formStatus.textContent = 'Email sending needs the website to be opened from your hosted URL (for example GitHub Pages), not by double-clicking this HTML file.';
-          formStatus.classList.add('error');
-          return;
-        }
-
         if (Date.now() - lastSubmissionAt < 20000) {
           formStatus.textContent = 'Please wait a few seconds before registering again.';
           formStatus.classList.add('error');
@@ -1049,11 +1052,12 @@
         }
 
         submitButton.disabled = true;
-        submitLabel.textContent = 'Sending securely…';
-        formStatus.textContent = 'Sending your registration securely…';
+        submitLabel.textContent = 'Registering…';
+        formStatus.textContent = 'Registering with Hexaleon…';
         lastSubmissionAt = Date.now();
 
-        // Start audio from the real submit gesture so mobile browsers allow it.
+        // Unlock audio from the user's gesture, but do not show success yet.
+        // The cinematic opens only after the mail service confirms the submission.
         playSuccessSound();
 
         try {
@@ -1075,29 +1079,16 @@
             result = {};
           }
 
-          const successFlag = result.success === true || result.success === 'true';
-          const serverMessage = String(result.message || '').trim();
-
-          if (!response.ok || !successFlag) {
-            throw new Error(serverMessage || 'Hexaleon could not complete the registration.');
-          }
-
-          // FormSubmit may accept the first request only to trigger recipient activation.
-          // Never display a false "Registered Successfully" screen in that case.
-          if (/activat|confirm|verification/i.test(serverMessage)) {
-            formStatus.textContent = 'Hexaleon email verification is required. Open hexaleon2000@gmail.com, activate the FormSubmit form once, then submit again.';
-            formStatus.classList.add('error');
-            submitButton.disabled = false;
-            submitLabel.textContent = 'Register';
-            lastSubmissionAt = 0;
-            return;
+          const confirmed = response.ok && (result.success === true || result.success === 'true');
+          if (!confirmed) {
+            throw new Error(result.message || 'Hexaleon email service did not confirm the registration.');
           }
 
           formStatus.textContent = 'Registration sent successfully.';
           formStatus.classList.add('success');
 
-          // Only show the existing cinematic success sequence after FormSubmit confirms success.
-          window.setTimeout(openSuccessReveal, 120);
+          // Mail submission is confirmed: now play the existing cinematic.
+          await openSuccessReveal();
 
           form.reset();
           [nameInput, emailInput, mobileInput].forEach(input => {
@@ -1108,9 +1099,7 @@
 
         } catch (error) {
           console.error('Enquiry submission failed:', error);
-          formStatus.textContent = error && error.message
-            ? error.message
-            : 'Unable to send right now. Please try again or use the email shown above.';
+          formStatus.textContent = 'Registration was not confirmed by the email service. Please try again.';
           formStatus.classList.add('error');
           submitButton.disabled = false;
           submitLabel.textContent = 'Register';
@@ -1123,49 +1112,3 @@
   </script>
 </body>
 </html>
-
-<style id="hexaleon-final-navbar-video-fix">
-  /* Keep the main navigation visible while either cinematic video is playing */
-  .navbar, nav, header.site-header, .site-header {
-    z-index: 2147483646 !important;
-  }
-
-  .logo-reveal,
-  .submission-sequence,
-  .submission-video-screen,
-  .success-reveal {
-    z-index: 2147483000 !important;
-  }
-
-  /* Reserve the navbar area so fullscreen media starts below it */
-  .logo-reveal video,
-  .submission-video-screen video {
-    max-height: calc(100vh - 76px) !important;
-  }
-
-  /* Never let video overlays disable the navbar */
-  body.logo-reveal-open .navbar,
-  body.logo-reveal-open nav,
-  body.logo-reveal-open .site-header,
-  body.submission-open .navbar,
-  body.submission-open nav,
-  body.submission-open .site-header {
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-    transform: none !important;
-  }
-</style>
-<script id="hexaleon-final-navbar-video-script">
-(() => {
-  const nav = document.querySelector('.navbar, nav, header.site-header, .site-header');
-  if (!nav) return;
-
-  // Navigation remains usable above fullscreen video overlays.
-  nav.style.position = getComputedStyle(nav).position === 'static' ? 'fixed' : getComputedStyle(nav).position;
-  nav.style.top = '0';
-  nav.style.left = '0';
-  nav.style.right = '0';
-  nav.style.zIndex = '2147483646';
-})();
-</script>
